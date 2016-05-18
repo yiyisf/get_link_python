@@ -17,7 +17,7 @@ class parser(HTMLParser):
         self.find_li = False
         self.findb = False
         self.num = 0
-        self.data = {}
+        self.dataprint = []
         self.tempson = {}
 
     def error(self, message):
@@ -41,10 +41,17 @@ class parser(HTMLParser):
         if tag == 'b':
             if self.finda and self.find_li:
                 self.num += 1
-                self.data[str(self.num)] = self.tempson
-                print('Link IS:' + str(self.num) + ' ' + self.tempson['link'])
+                x = str(self.num) + str(self.tempson)
+                self.dataprint.append(x)
 
+                # print('Link IS:' + str(self.num) + ' ' + self.tempson['link'])
+                # print('data IS:')
+                # print(self.data)
+                # self.tempson.clear()
+
+            self.finda = False
             self.findb = False
+            self.find_li = False
         if tag == 'li':
             self.find_li = False
 
@@ -54,18 +61,20 @@ class parser(HTMLParser):
     def handle_data(self, data):
         if self.find_li and self.finda and self.findb:
             self.tempson['name'] = data
-            # print('演唱者:' + data)
 
-    def return_data(self):
-        return self.data
 
 
 par = parser()
 
 par.feed(r.text)
 
+# print(par.dataprint)
+# print(par.dataprint)
+# print('length{0}'.format(str(par.data.get('100'))))
+
+#
 with open('out/out.json', 'w') as fp:
-    json.dump(par.return_data(), fp, indent="\t")
+    json.dump(par.dataprint, fp, indent="\t", sort_keys=True)
 
 
 # f = open('out/out.json', 'w')
