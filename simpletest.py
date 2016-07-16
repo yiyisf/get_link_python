@@ -1,6 +1,5 @@
 import requests
 from html.parser import HTMLParser
-import json
 
 
 class MyHTMLParser(HTMLParser):
@@ -40,29 +39,39 @@ class MyHTMLParser(HTMLParser):
 
     def getlink(self):
         return self.link
+# class MyHrmlParser(HTMLParser):
+#
+#     def handle_starttag(self, tag, attrs):
+#         if tag == "span":
+#             self.span = 1
+#             print(attrs)
+#         if tag == "img":
+#             self.img = 1
+#
+#     def handle_endtag(self, tag):
+#         if tag == "span":
+#             self.span = 0
+#         if tag == "img":
+#             self.img = 0
+#
+#     def handle_data(self, data):
+#
+#         if self.span == 0 and self.img == 0:
+#             print(data)
 
 
-def getcity(artist=""):
-    url = "http://tianqi.2345.com/t/searchCity.php?q=0635&pType=local"
+def getlink(artist):
+    url = "https://www.discogs.com/search/?q=" + artist + "&type=all"
 
     header = {
         "User-Agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"
     }
 
     r = requests.get(url=url, headers=header)
+    parser = MyHTMLParser(artist=artist)
 
-    j = json.loads(r.text)
-
-    print(j['res'][0]['href'])
-
+    parser.feed(r.text)
+    return parser.getlink()
 
 
-    # print(r.text)
-    # r.content.decode('ISO-8859-1', "replace").encode('utf-8', 'replace')
-    # print(r.content.decode('ISO-8859-1', "replace").encode('utf-8', 'replace'))
-    # parser = MyHTMLParser(artist=artist)
-    #
-    # parser.feed(r.text)
-    # return parser.getlink()
-
-getcity()
+print(getlink("Andrea - I'm A Lover"))
